@@ -78,6 +78,15 @@ public class ExpenseTrackerDAO {
             stmt.executeUpdate();
         }
     }
+    public void deleteCategory(int id) throws SQLException{
+        String sql="DELETE FROM categories WHERE id=?";
+        try(Connection conn=DatabaseConnection.getDBConnection();
+        PreparedStatement stmt=conn.prepareStatement(sql))
+        {
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+        }
+    }
     public String getCategoryNameById(int categoryId) throws SQLException {
     String sql = "SELECT name FROM categories WHERE id=?";
     try (Connection conn = DatabaseConnection.getDBConnection();
