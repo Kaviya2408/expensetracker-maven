@@ -16,7 +16,7 @@ public class CategoryGUI extends JFrame {
     private DefaultTableModel tableModel;
     private JTextField nameField;
     private JButton addButton;
-
+    private JButton deleteButton;
     public CategoryGUI() {
         dao = new ExpenseTrackerDAO();
         setTitle("Category Manager");
@@ -42,6 +42,7 @@ public class CategoryGUI extends JFrame {
         categoryTable = new JTable(tableModel);
         nameField = new JTextField(15);
         addButton = new JButton("Add Category");
+        deleteButton=new JButton("delete category");
     }
 
     private void setupLayout() {
@@ -49,13 +50,14 @@ public class CategoryGUI extends JFrame {
         inputPanel.add(new JLabel("Name:"));
         inputPanel.add(nameField);
         inputPanel.add(addButton);
-
+        inputPanel.add(deleteButton);
         add(inputPanel, BorderLayout.NORTH);
         add(new JScrollPane(categoryTable), BorderLayout.CENTER);
     }
 
     private void setupListeners() {
         addButton.addActionListener(e -> addCategory());
+        deleteButton.addActionListener(e -> deleteCategory());
     }
 
     private void loadCategories() {
@@ -80,8 +82,33 @@ public class CategoryGUI extends JFrame {
             dao.addCategory(new Category(name));
             nameField.setText("");
             loadCategories();
+            JOptionPane.showMessageDialog(this,"Category Added successfully");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error adding category: " + e.getMessage());
+        }
+    }
+    private void deleteCategory()
+    {
+        int row=categoryTable.getSelectedRow();
+        try{
+           int todelete =JOptionPane.showConfirmDialog(this, "Are Sure you to delete row");
+            if (todelete==0 && row >= 0) {
+                int id = (int) tableModel.getValueAt(row, 0);
+                dao.deleteCategory(id);
+                loadCategories();
+                JOptionPane.showMessageDialog(this,"Category deleted successfully");
+            }
+            else if(todelete==1)
+            {
+            JOptionPane.showMessageDialog(this, "Delete Category cancelled");
+            } 
+            else {
+            JOptionPane.showMessageDialog(this, "Select an Category to delete.");
+            }
+        }
+        catch(SQLException e)
+        {
+            JOptionPane.showMessageDialog(this,"Error in deleting category"+e.getMessage());
         }
     }
 }
