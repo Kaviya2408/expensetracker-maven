@@ -1,14 +1,24 @@
 package com.expnsetracker.gui;
 
-import com.expnsetracker.dao.ExpenseTrackerDAO;
-import com.expnsetracker.model.Expense;
-import com.expnsetracker.model.Category;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import com.expnsetracker.dao.ExpenseTrackerDAO;
+import com.expnsetracker.model.Category;
+import com.expnsetracker.model.Expense;
 
 public class ExpenseGUI extends JFrame {
 
@@ -117,6 +127,7 @@ public class ExpenseGUI extends JFrame {
             amountField.setText("");
             dateField.setText("");
             loadExpenses();
+            JOptionPane.showMessageDialog(this, "Expense added successfully");
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid amount.");
         } catch (SQLException e) {
@@ -129,8 +140,15 @@ public class ExpenseGUI extends JFrame {
         if (row >= 0) {
             int id = (int) tableModel.getValueAt(row, 0);
             try {
+                int option=JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this expense?");
+                if(option==0){
                 dao.deleteExpense(id);
+                JOptionPane.showMessageDialog(this, "Expense deleted successfully");
                 loadExpenses();
+                } else if(option==1)
+                {
+                    JOptionPane.showMessageDialog(this, "Delete Expense cancelled");
+                }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Error deleting expense: " + e.getMessage());
             }
